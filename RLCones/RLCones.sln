@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32929.386
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RLCones", "RLCones\RLCones.vcxproj", "{25074274-1927-4160-BDF1-94F469FBBD2E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{25074274-1927-4160-BDF1-94F469FBBD2E}.Release|x64.ActiveCfg = Release|x64
+		{25074274-1927-4160-BDF1-94F469FBBD2E}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0AF257B4-A4BC-4088-A8E9-BD3F26F6A895}
+	EndGlobalSection
+EndGlobal
