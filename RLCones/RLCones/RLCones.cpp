@@ -65,6 +65,21 @@ void RLCones::RegisterNotifiers()
 		ball.SetLocation(car.GetLocation() + addToBall);
 		ball.SetVelocity(playerVelocity);
 	}, "Spawns the ball on top of your car", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
+
+	//clear custom spawns
+	_globalCvarManager->registerNotifier("rlcones_clear_spawns", [&gw = this->gameWrapper, &bpm = this->_bPadManager](std::vector<std::string> commands) {
+		CVarWrapper isEnabled = _globalCvarManager->getCvar("rlcones_enabled");
+		if (isEnabled.IsNull() || !isEnabled.getBoolValue() || !gw->IsInFreeplay())
+			return;
+		
+		//need the custom enabled option to be off
+		CVarWrapper isCustomEnabled = _globalCvarManager->getCvar("rlcones_boostpad_custom_render_enabled");
+		if (isCustomEnabled.IsNull() || isCustomEnabled.getBoolValue() || !gw->IsInFreeplay())
+			return;
+
+		bpm.ClearCustomSpawns();
+		
+	}, "Clear the custom spawns from the field", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
 }
 
 void RLCones::RegisterHookEvents()

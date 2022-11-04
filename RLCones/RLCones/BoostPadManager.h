@@ -16,6 +16,7 @@ public:
 	Cylinder2BoostPad CreateCylinder2BoostPad(Vector spawnPos, bool isBigPad = false);
 	void SpawnCustomCylinder2BoostPad(Vector spawnPos, bool isBigPad = false);
 	void SpawnCustomCylinder2Gate(Vector spawnPos, float gateDistanceFromCar, bool isBigPad = false);
+	void ClearCustomSpawns();
 };
 
 

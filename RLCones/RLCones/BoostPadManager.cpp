@@ -87,3 +87,8 @@ void BoostPadManager::SpawnCustomCylinder2Gate(Vector carPos, float gateDistance
 	cyRight.radiusTop = padRightRadius * .5f;
 	_customCylinder2Boostpads.push_back(Cylinder2BoostPad(cyRight, padRight));
 }
+
+void BoostPadManager::ClearCustomSpawns() 
+{
+	_customCylinder2Boostpads.clear();
+}

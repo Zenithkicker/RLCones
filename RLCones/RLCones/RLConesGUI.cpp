@@ -44,7 +44,19 @@ void RLCones::RenderSettings() {
 		enableCustomCones.setValue(customEnabled);
 	}
 	if (ImGui::IsItemHovered()) {
-		ImGui::SetTooltip("Enable/Disable Custom Cones. Spawn your own cones based on car location. Left Alt for small cones Right Alt for large ones");
+		ImGui::SetTooltip("Enable/Disable Custom Cones. Spawn your own cones based on car location. Left Alt for small cones Right Alt for large ones. Disable this to show button to clear custom spawns");
+	}
+
+	//BallOnTop
+	if (!customEnabled) {
+		if (ImGui::Button("Clear Spawns")) {
+			gameWrapper->Execute([this](GameWrapper* gw) {
+				cvarManager->executeCommand("rlcones_clear_spawns");
+				});
+		}
+		if (ImGui::IsItemHovered()) {
+			ImGui::SetTooltip("Clear your custom spawns from the field");
+		}
 	}
 
 	//BallOnTop
@@ -99,4 +111,6 @@ void RLCones::RenderSettings() {
 		std::string hoverText = "gate distance is " + std::to_string(gateDist);
 		ImGui::SetTooltip(hoverText.c_str());
 	}
+
+	
 }
