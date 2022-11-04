@@ -114,21 +114,21 @@ void RLCones::RunBallCollisionChecks(unsigned char forceMode, float forceAmount)
 
 	if (!cvarBoostpadStandardIsEnabled.IsNull() && cvarBoostpadStandardIsEnabled.getBoolValue()) {
 		for (int i = 0; i < _bPadManager.boostPadsCount; i++) {
-			HandleBallPadCollision(ball, _bPadManager.boostPads[i], forceMode, forceAmount);
+			HandleBallPadCollision(ball, _bPadManager._standardCylinder2Boostpads[i], forceMode, forceAmount);
 		}
 	}
 
 	if (!cvarBoostpadCustomIsEnabled.IsNull() && cvarBoostpadCustomIsEnabled.getBoolValue()) {
-		for (std::vector<BoostPad>::iterator it = _bPadManager.customSpawns.begin(); it != _bPadManager.customSpawns.end(); ++it)
+		for (std::vector<Cylinder2BoostPad>::iterator it = _bPadManager._customCylinder2Boostpads.begin(); it != _bPadManager._customCylinder2Boostpads.end(); ++it)
 		{
 			HandleBallPadCollision(ball, *it, forceMode, forceAmount);
 		}
 	}
 }
 
-void RLCones::HandleBallPadCollision(BallWrapper& ball, BoostPad& pad, unsigned char forceMode, float forceAmount)
+void RLCones::HandleBallPadCollision(BallWrapper& ball, Cylinder2BoostPad& pad, unsigned char forceMode, float forceAmount)
 {
-	if (_collisionManager.AreSpheresColliding(ball.GetLocation(), ball.GetRadius(), pad.GetPosition(), pad.GetRadius()))
+	if (_collisionManager.AreSpheresColliding(ball.GetLocation(), ball.GetRadius(), pad._boostPad.GetPosition(), pad._boostPad.GetRadius()))
 	{
 		Vector force = Vector(0, 0, forceAmount);
 		ball.AddForce(force, forceMode);
@@ -151,29 +151,20 @@ void RLCones::Render(CanvasWrapper canvas)
 	CVarWrapper cvarBoostpadStandardIsEnabled = _globalCvarManager->getCvar("rlcones_boostpad_standard_render_enabled");
 	CVarWrapper cvarBoostpadCustomIsEnabled = _globalCvarManager->getCvar("rlcones_boostpad_custom_render_enabled");
 
-	if (!cvarBoostpadStandardIsEnabled.IsNull() && cvarBoostpadStandardIsEnabled.getBoolValue()) {
+	if (!cvarBoostpadStandardIsEnabled.IsNull() && cvarBoostpadStandardIsEnabled.getBoolValue()) 
+	{
 		for (int i = 0; i < _bPadManager.boostPadsCount; i++)
 		{
-			RT::Cylinder2 cy = RT::Cylinder2();
-			BoostPad pad = _bPadManager.boostPads[i];
-			cy.location = pad.GetPosition();
-			cy.height = pad.GetHeight();
-			float padRadius = pad.GetRadius();
-			cy.radiusBottom = padRadius;
-			cy.radiusTop = padRadius * .5f;
-			cy.Draw(canvas, frust);
+			Cylinder2BoostPad pad = _bPadManager._standardCylinder2Boostpads[i];			
+			pad.Draw(canvas, frust);
 		}
 	}
-	if (!cvarBoostpadCustomIsEnabled.IsNull() && cvarBoostpadCustomIsEnabled.getBoolValue()) {
-		for (std::vector<BoostPad>::iterator it = _bPadManager.customSpawns.begin(); it != _bPadManager.customSpawns.end(); ++it) {
-			RT::Cylinder2 cy = RT::Cylinder2();
-			BoostPad pad = *it;
-			cy.location = pad.GetPosition();
-			cy.height = pad.GetHeight();
-			float padRadius = pad.GetRadius();
-			cy.radiusBottom = padRadius;
-			cy.radiusTop = padRadius * .5f;
-			cy.Draw(canvas, frust);
+	if (!cvarBoostpadCustomIsEnabled.IsNull() && cvarBoostpadCustomIsEnabled.getBoolValue()) 
+	{
+		for (std::vector<Cylinder2BoostPad>::iterator it = _bPadManager._customCylinder2Boostpads.begin(); it != _bPadManager._customCylinder2Boostpads.end(); ++it) 
+		{			
+			Cylinder2BoostPad pad = *it;
+			pad.Draw(canvas, frust);
 		}
 	}
 }
@@ -199,17 +190,15 @@ void RLCones::OnKeyPressed(ActorWrapper aw, void* params, std::string eventName)
 	if (cw.IsNull())
 		return;
 
-	BoostPad pad;
-	pad.SetSpawnPosition(cw.GetLocation());
-
 	if (keyPressData->Key.Index == gameWrapper->GetFNameIndexByString("LeftAlt")) 
 	{
-		_bPadManager.customSpawns.push_back(pad);
+		Cylinder2BoostPad pad = _bPadManager.CreateCylinder2BoostPad(cw.GetLocation());
+		_bPadManager._customCylinder2Boostpads.push_back(pad);
 	}
 	else if (keyPressData->Key.Index == gameWrapper->GetFNameIndexByString("RightAlt"))
 	{
-		pad.SetIsBigPad(true);
-		_bPadManager.customSpawns.push_back(pad);
+		Cylinder2BoostPad pad = _bPadManager.CreateCylinder2BoostPad(cw.GetLocation(), true);
+		_bPadManager._customCylinder2Boostpads.push_back(pad);
 	}
 }
 
