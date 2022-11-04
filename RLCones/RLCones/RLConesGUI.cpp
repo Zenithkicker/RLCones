@@ -87,4 +87,16 @@ void RLCones::RenderSettings() {
 		cvarForceMode.setValue(2);
 	}
 
+
+	//Gate Distance From Car
+	CVarWrapper cvarGateDist = cvarManager->getCvar("rlcones_gate_distance_from_car");
+	if (!cvarGateDist) { return; }
+	float gateDist = cvarGateDist.getFloatValue();
+	if (ImGui::SliderFloat("Gate Distance From Car", &gateDist, 270, 600)) {
+		cvarGateDist.setValue(gateDist);
+	}
+	if (ImGui::IsItemHovered()) {
+		std::string hoverText = "gate distance is " + std::to_string(gateDist);
+		ImGui::SetTooltip(hoverText.c_str());
+	}
 }

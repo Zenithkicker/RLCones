@@ -48,6 +48,42 @@ Cylinder2BoostPad BoostPadManager::CreateCylinder2BoostPad(Vector spawnPos, bool
 	cy.height = pad.GetHeight();
 	float padRadius = pad.GetRadius();
 	cy.radiusBottom = padRadius;
-	cy.radiusTop = padRadius * .5f;	
+	cy.radiusTop = padRadius * .5f;		
 	return Cylinder2BoostPad(cy, pad);
+}
+
+void BoostPadManager::SpawnCustomCylinder2BoostPad(Vector spawnPos, bool isBigPad)
+{
+	BoostPad pad = BoostPad(spawnPos, isBigPad);
+	RT::Cylinder2 cy = RT::Cylinder2();
+	cy.location = pad.GetPosition();
+	cy.height = pad.GetHeight();
+	float padRadius = pad.GetRadius();
+	cy.radiusBottom = padRadius;
+	cy.radiusTop = padRadius * .5f;
+	_customCylinder2Boostpads.push_back(Cylinder2BoostPad(cy, pad));
+}
+
+void BoostPadManager::SpawnCustomCylinder2Gate(Vector carPos, float gateDistanceFromCar, bool isBigPad)
+{
+	Vector gateLeftSpawnPos = Vector(carPos.X - gateDistanceFromCar, carPos.Y, carPos.Z);
+	Vector gateRightSpawnPos = Vector(carPos.X + gateDistanceFromCar, carPos.Y, carPos.Z);
+	BoostPad padLeft = BoostPad(gateLeftSpawnPos, isBigPad);
+	BoostPad padRight = BoostPad(gateRightSpawnPos, isBigPad);
+
+	RT::Cylinder2 cyLeft = RT::Cylinder2();
+	cyLeft.location = padLeft.GetPosition();
+	cyLeft.height = padLeft.GetHeight();
+	float padLeftRadius = padLeft.GetRadius();
+	cyLeft.radiusBottom = padLeftRadius;
+	cyLeft.radiusTop = padLeftRadius * .5f;
+	_customCylinder2Boostpads.push_back(Cylinder2BoostPad(cyLeft, padLeft));
+
+	RT::Cylinder2 cyRight = RT::Cylinder2();
+	cyRight.location = padRight.GetPosition();
+	cyRight.height = padRight.GetHeight();
+	float padRightRadius = padRight.GetRadius();
+	cyRight.radiusBottom = padRightRadius;
+	cyRight.radiusTop = padRightRadius * .5f;
+	_customCylinder2Boostpads.push_back(Cylinder2BoostPad(cyRight, padRight));
 }

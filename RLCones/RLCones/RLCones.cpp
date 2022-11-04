@@ -36,6 +36,7 @@ void RLCones::RegisterCvars()
 	_globalCvarManager->registerCvar("rlcones_boostpad_custom_render_enabled", "0");
 	_globalCvarManager->registerCvar("rlcones_boostpad_collision_force", "1000", "The amount of force to apply when the ball collides with the boost pad", true, true, 0, true, 10000);
 	_globalCvarManager->registerCvar("rlcones_forceMode", "1", "stuff");	
+	_globalCvarManager->registerCvar("rlcones_gate_distance_from_car", "400", "The gate distance from the car. Press G to spawn", true, true, 270, true, 600);
 }
 
 void RLCones::RegisterNotifiers()
@@ -192,13 +193,20 @@ void RLCones::OnKeyPressed(ActorWrapper aw, void* params, std::string eventName)
 
 	if (keyPressData->Key.Index == gameWrapper->GetFNameIndexByString("LeftAlt")) 
 	{
-		Cylinder2BoostPad pad = _bPadManager.CreateCylinder2BoostPad(cw.GetLocation());
-		_bPadManager._customCylinder2Boostpads.push_back(pad);
+		_bPadManager.SpawnCustomCylinder2BoostPad(cw.GetLocation());
 	}
 	else if (keyPressData->Key.Index == gameWrapper->GetFNameIndexByString("RightAlt"))
 	{
-		Cylinder2BoostPad pad = _bPadManager.CreateCylinder2BoostPad(cw.GetLocation(), true);
-		_bPadManager._customCylinder2Boostpads.push_back(pad);
+		_bPadManager.SpawnCustomCylinder2BoostPad(cw.GetLocation(),true);
+	}
+	else if (keyPressData->Key.Index == gameWrapper->GetFNameIndexByString("G"))
+	{
+		CVarWrapper cvarDistFromCar = _globalCvarManager->getCvar("rlcones_gate_distance_from_car");		
+		float gateDistFromCar = 400;
+		if (!cvarDistFromCar.IsNull())
+			gateDistFromCar = cvarDistFromCar.getFloatValue();
+
+		_bPadManager.SpawnCustomCylinder2Gate(cw.GetLocation(), gateDistFromCar, true);
 	}
 }
 
