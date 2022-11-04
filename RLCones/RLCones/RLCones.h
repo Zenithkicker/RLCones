@@ -45,7 +45,7 @@ class RLCones: public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod::Plug
 	virtual void RegisterHookEvents();
 	virtual void RunBallCollisionChecks(unsigned char forceMode, float forceAmount);
 	virtual void GetBall(unsigned char forceMode, float forceAmount);
-	virtual void HandleBallPadCollision(BallWrapper& ball, BoostPad& pad, unsigned char forceMode, float forceAmount);	
+	virtual void HandleBallPadCollision(BallWrapper& ball, Cylinder2BoostPad& pad, unsigned char forceMode, float forceAmount);
 	void RenderSettings() override;
 	std::string GetPluginName() override;
 	void SetImGuiContext(uintptr_t ctx) override;

@@ -1,12 +1,19 @@
 #pragma once
 #include "BoostPad.h"
+#include "Cylinder2BoostPad.h"
+
 class BoostPadManager
 {
+private:
+	
+	
+
 public:
-	BoostPadManager();
-	BoostPad boostPads[34];
 	const int boostPadsCount = 34;
-	std::vector<BoostPad> customSpawns;
+	BoostPadManager();
+	std::vector<Cylinder2BoostPad> _customCylinder2Boostpads;
+	Cylinder2BoostPad _standardCylinder2Boostpads[34];	
+	Cylinder2BoostPad CreateCylinder2BoostPad(Vector spawnPos, bool isBigPad = false);
 };
 
 

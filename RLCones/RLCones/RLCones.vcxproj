@@ -94,6 +94,7 @@
     <ClCompile Include="BoostPad.cpp" />
     <ClCompile Include="BoostPadManager.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
+    <ClCompile Include="Cylinder2BoostPad.cpp" />
     <ClCompile Include="Extra\CanvasExtensions.cpp">
       <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
@@ -175,6 +176,7 @@
     <ClInclude Include="BoostPad.h" />
     <ClInclude Include="BoostPadManager.h" />
     <ClInclude Include="CollisionManager.h" />
+    <ClInclude Include="Cylinder2BoostPad.h" />
     <ClInclude Include="Extra\CanvasExtensions.h" />
     <ClInclude Include="Extra\RenderingAssistant.h" />
     <ClInclude Include="Extra\RenderingMath.h" />
