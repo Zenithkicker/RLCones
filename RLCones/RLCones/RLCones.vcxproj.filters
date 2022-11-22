@@ -159,6 +159,9 @@
     <ClCompile Include="Cylinder2BoostPad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="JSONParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RLCones.h">
@@ -281,10 +284,16 @@
     <ClInclude Include="Cylinder2BoostPad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="JSONParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RLCones.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

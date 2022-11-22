@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "RLCones.h"
+#include "JSONParser.h"
 using namespace std;
 
 BAKKESMOD_PLUGIN(RLCones, "This is the RLCones description", plugin_version, PLUGINTYPE_FREEPLAY)
@@ -11,7 +12,7 @@ void RLCones::onLoad()
 	_globalCvarManager = cvarManager;
 	RegisterCvars();
 	RegisterNotifiers();
-	RegisterHookEvents();	
+	RegisterHookEvents();
 }
 
 void RLCones::OnFreeplayLoad(std::string eventName)
@@ -66,6 +67,8 @@ void RLCones::RegisterNotifiers()
 		ball.SetVelocity(playerVelocity);
 	}, "Spawns the ball on top of your car", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
 
+
+
 	//clear custom spawns
 	_globalCvarManager->registerNotifier("rlcones_clear_spawns", [&gw = this->gameWrapper, &bpm = this->_bPadManager](std::vector<std::string> commands) {
 		CVarWrapper isEnabled = _globalCvarManager->getCvar("rlcones_enabled");
@@ -80,6 +83,23 @@ void RLCones::RegisterNotifiers()
 		bpm.ClearCustomSpawns();
 		
 	}, "Clear the custom spawns from the field", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
+
+
+
+
+	//load custom course
+	_globalCvarManager->registerNotifier("rlcones_load_course", [&gw = this->gameWrapper, &bpm = this->_bPadManager](std::vector<std::string> commands) {
+		CVarWrapper isEnabled = _globalCvarManager->getCvar("rlcones_enabled");
+		if (isEnabled.IsNull() || !isEnabled.getBoolValue() || !gw->IsInFreeplay())
+			return;
+
+		JSONParser jsonParser = JSONParser();
+		std::string filePath = gw->GetDataFolder().string() + "\BoostPads.json";
+		LOG(filePath);
+		jsonParser.WriteFile(filePath, "{\"test\":\"hello world\"}");
+		//json data = jsonParser.ReadFile(filePath);
+
+	}, "Load Custom Course", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
 }
 
 void RLCones::RegisterHookEvents()
