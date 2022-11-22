@@ -159,7 +159,13 @@
     <ClCompile Include="Cylinder2BoostPad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="JSONParser.cpp">
+    <ClCompile Include="JSONFileParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Course.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CourseItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -284,7 +290,13 @@
     <ClInclude Include="Cylinder2BoostPad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="JSONParser.h">
+    <ClInclude Include="JSONFileParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Course.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CourseItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

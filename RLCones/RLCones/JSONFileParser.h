@@ -3,10 +3,10 @@
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
-class JSONParser
+class JSONFileParser
 {
 public:
-	JSONParser();
+	JSONFileParser();
 	json ReadFile(std::string filePath);
 	void WriteFile(std::string filePath, std::string data);
 };

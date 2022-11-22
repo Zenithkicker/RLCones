@@ -94,6 +94,8 @@
     <ClCompile Include="BoostPad.cpp" />
     <ClCompile Include="BoostPadManager.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
+    <ClCompile Include="Course.cpp" />
+    <ClCompile Include="CourseItem.cpp" />
     <ClCompile Include="Cylinder2BoostPad.cpp" />
     <ClCompile Include="Extra\CanvasExtensions.cpp">
       <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
@@ -120,7 +122,7 @@
     <ClCompile Include="imgui\imgui_searchablecombo.cpp" />
     <ClCompile Include="imgui\imgui_timeline.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
-    <ClCompile Include="JSONParser.cpp" />
+    <ClCompile Include="JSONFileParser.cpp" />
     <ClCompile Include="Objects\Chevron.cpp">
       <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
@@ -177,6 +179,8 @@
     <ClInclude Include="BoostPad.h" />
     <ClInclude Include="BoostPadManager.h" />
     <ClInclude Include="CollisionManager.h" />
+    <ClInclude Include="Course.h" />
+    <ClInclude Include="CourseItem.h" />
     <ClInclude Include="Cylinder2BoostPad.h" />
     <ClInclude Include="Extra\CanvasExtensions.h" />
     <ClInclude Include="Extra\RenderingAssistant.h" />
@@ -195,7 +199,7 @@
     <ClInclude Include="imgui\imstb_rectpack.h" />
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
-    <ClInclude Include="JSONParser.h" />
+    <ClInclude Include="JSONFileParser.h" />
     <ClInclude Include="Objects\Chevron.h" />
     <ClInclude Include="Objects\Circle.h" />
     <ClInclude Include="Objects\Circle2D.h" />

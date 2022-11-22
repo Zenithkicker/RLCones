@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "RLCones.h"
-#include "JSONParser.h"
+#include "JSONFileParser.h"
+#include "Course.h"
 using namespace std;
 
 BAKKESMOD_PLUGIN(RLCones, "This is the RLCones description", plugin_version, PLUGINTYPE_FREEPLAY)
@@ -93,11 +94,13 @@ void RLCones::RegisterNotifiers()
 		if (isEnabled.IsNull() || !isEnabled.getBoolValue() || !gw->IsInFreeplay())
 			return;
 
-		JSONParser jsonParser = JSONParser();
-		std::string filePath = gw->GetDataFolder().string() + "\BoostPads.json";
-		LOG(filePath);
-		jsonParser.WriteFile(filePath, "{\"test\":\"hello world\"}");
-		//json data = jsonParser.ReadFile(filePath);
+		JSONFileParser jsonFileParser = JSONFileParser();
+		std::string filePath = gw->GetDataFolder().string() + "/BoostPads.json";	
+		//jsonParser.WriteFile(filePath, "{\"test\":\"hello world\"}");
+		json data = jsonFileParser.ReadFile(filePath);
+		Course course = Course(data);
+		CourseItem firstItem = course.GetCourseItems().at(0);
+		LOG("X: " + std::to_string(firstItem.X) + " Y: " + std::to_string(firstItem.Y) + " Z: " + std::to_string(firstItem.Z) + " IsBig: " + std::to_string(firstItem.IsBig));
 
 	}, "Load Custom Course", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
 }
