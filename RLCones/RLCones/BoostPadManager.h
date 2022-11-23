@@ -1,6 +1,7 @@
 #pragma once
 #include "BoostPad.h"
 #include "Cylinder2BoostPad.h"
+#include "Course.h"
 
 class BoostPadManager
 {
@@ -17,6 +18,7 @@ public:
 	void SpawnCustomCylinder2BoostPad(Vector spawnPos, bool isBigPad = false);
 	void SpawnCustomCylinder2Gate(Vector spawnPos, float gateDistanceFromCar, bool isBigPad = false);
 	void ClearCustomSpawns();
+	void LoadCourse(Course course);
 };
 
 

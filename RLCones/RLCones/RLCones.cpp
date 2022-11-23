@@ -99,8 +99,7 @@ void RLCones::RegisterNotifiers()
 		//jsonParser.WriteFile(filePath, "{\"test\":\"hello world\"}");
 		json data = jsonFileParser.ReadFile(filePath);
 		Course course = Course(data);
-		CourseItem firstItem = course.GetCourseItems().at(0);
-		LOG("X: " + std::to_string(firstItem.X) + " Y: " + std::to_string(firstItem.Y) + " Z: " + std::to_string(firstItem.Z) + " IsBig: " + std::to_string(firstItem.IsBig));
+		bpm.LoadCourse(course);
 
 	}, "Load Custom Course", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
 }

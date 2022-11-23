@@ -92,3 +92,14 @@ void BoostPadManager::ClearCustomSpawns()
 {
 	_customCylinder2Boostpads.clear();
 }
+
+void BoostPadManager::LoadCourse(Course course)
+{
+	ClearCustomSpawns();
+
+	std::vector<CourseItem> _courseItems = course.GetCourseItems();
+	for (std::vector<CourseItem>::iterator it = _courseItems.begin(); it != _courseItems.end(); ++it)
+	{
+		_customCylinder2Boostpads.push_back(CreateCylinder2BoostPad(Vector(it->X, it->Y, it->Z), it->IsBig));
+	}
+}
