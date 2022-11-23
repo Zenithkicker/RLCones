@@ -39,6 +39,7 @@ class RLCones: public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod::Plug
 {
 	BoostPadManager _bPadManager = BoostPadManager();
 	CollisionManager _collisionManager = CollisionManager();
+	std::vector<std::string> _custombPadFileList;
 	virtual void onLoad();
 	virtual void onUnload();
 	virtual void RegisterCvars();

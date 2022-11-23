@@ -167,9 +167,11 @@ void RLCones::LoadCourseFileList()
 		return;
 	}
 
+	_custombPadFileList.clear();
+
 	for (const auto& entry : fs::directory_iterator(filesDirectory)) 
 	{
-		LOG(entry.path().filename().string());
+		_custombPadFileList.push_back(entry.path().filename().string());
 	}		
 }
 

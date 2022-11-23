@@ -58,9 +58,28 @@ void RLCones::RenderSettings() {
 			ImGui::SetTooltip("Clear your custom spawns from the field");
 		}
 
-		const char* items[] = { "AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIIIIII", "JJJJ", "KKKKKKK" };
-		static int item_current = 0;
-		ImGui::Combo("combo", &item_current, items, IM_ARRAYSIZE(items));
+		int selectedIndex = 0; // you need to store this state somewhere
+
+		// later in your code...
+		if (ImGui::BeginCombo("combo","preview"))
+		{
+			for (int i = 0; i < _custombPadFileList.size(); ++i) 
+			{
+				const bool isSelected = (selectedIndex == i);
+				const char* item = _custombPadFileList.at(i).data();
+				if (ImGui::Selectable(item, isSelected))
+				{
+					selectedIndex = i;
+				}
+
+				// Set the initial focus when opening the combo
+				// (scrolling + keyboard navigation focus)
+				if (isSelected) {
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndCombo();
+		}
 
 	}
 
