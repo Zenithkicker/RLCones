@@ -1,5 +1,5 @@
 #pragma once
-
+#include <filesystem>
 #include "bakkesmod/plugin/bakkesmodplugin.h"
 #include "bakkesmod/plugin/pluginwindow.h"
 #include "bakkesmod/plugin/PluginSettingsWindow.h"
@@ -8,6 +8,7 @@
 #include "Objects/Cylinder2.h"
 #include "BoostPadManager.h"
 #include "CollisionManager.h"
+namespace fs = std::filesystem;
 
 constexpr auto plugin_version = stringify(VERSION_MAJOR) "." stringify(VERSION_MINOR) "." stringify(VERSION_PATCH) "." stringify(VERSION_BUILD);
 
@@ -53,5 +54,6 @@ class RLCones: public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod::Plug
 	void OnFreeplayLoad(std::string eventName);
 	void OnFreeplayDestroy(std::string eventName);
 	void OnKeyPressed(ActorWrapper aw, void* params, std::string eventName);
+	void LoadCourseFileList();
 };
 

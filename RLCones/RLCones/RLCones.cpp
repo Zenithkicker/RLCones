@@ -13,12 +13,13 @@ void RLCones::onLoad()
 	_globalCvarManager = cvarManager;
 	RegisterCvars();
 	RegisterNotifiers();
-	RegisterHookEvents();
+	RegisterHookEvents();	
 }
 
 void RLCones::OnFreeplayLoad(std::string eventName)
 {
 	gameWrapper->RegisterDrawable(std::bind(&RLCones::Render, this, std::placeholders::_1));	
+	LoadCourseFileList();
 }
 
 void RLCones::OnFreeplayDestroy(std::string eventName)
@@ -94,9 +95,13 @@ void RLCones::RegisterNotifiers()
 		if (isEnabled.IsNull() || !isEnabled.getBoolValue() || !gw->IsInFreeplay())
 			return;
 
+		//must disable custom boost pad rendering first
+		CVarWrapper cvarBoostpadCustomIsEnabled = _globalCvarManager->getCvar("rlcones_boostpad_custom_render_enabled");
+		if (cvarBoostpadCustomIsEnabled.IsNull() || cvarBoostpadCustomIsEnabled.getBoolValue())
+			return;
+
 		JSONFileParser jsonFileParser = JSONFileParser();
-		std::string filePath = gw->GetDataFolder().string() + "/BoostPads.json";	
-		//jsonParser.WriteFile(filePath, "{\"test\":\"hello world\"}");
+		std::string filePath = gw->GetDataFolder().string() + "/RLCones/BoostPads.json";
 		json data = jsonFileParser.ReadFile(filePath);
 		Course course = Course(data);
 		bpm.LoadCourse(course);
@@ -109,8 +114,13 @@ void RLCones::RegisterNotifiers()
 		if (isEnabled.IsNull() || !isEnabled.getBoolValue() || !gw->IsInFreeplay())
 			return;
 
+		//must disable custom boost pad rendering first
+		CVarWrapper cvarBoostpadCustomIsEnabled = _globalCvarManager->getCvar("rlcones_boostpad_custom_render_enabled");
+		if (cvarBoostpadCustomIsEnabled.IsNull() || cvarBoostpadCustomIsEnabled.getBoolValue())
+			return;
+
 		JSONFileParser jsonFileParser = JSONFileParser();
-		std::string filePath = gw->GetDataFolder().string() + "/BoostPads.json";
+		std::string filePath = gw->GetDataFolder().string() + "/RLCones/BoostPads.json";
 		std::string fileData = bpm.SerializeCustomCones();
 		jsonFileParser.WriteFile(filePath, fileData);
 
@@ -146,6 +156,21 @@ void RLCones::RegisterHookEvents()
 	gameWrapper->HookEvent("Function TAGame.Mutator_Freeplay_TA.Init", bind(&RLCones::OnFreeplayLoad, this, std::placeholders::_1));
 	gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.Destroyed", bind(&RLCones::OnFreeplayDestroy, this, std::placeholders::_1));
 	gameWrapper->HookEventWithCaller<ActorWrapper>("Function TAGame.GameViewportClient_TA.HandleKeyPress", std::bind(&RLCones::OnKeyPressed, this, placeholders::_1, placeholders::_2, placeholders::_3));
+}
+
+void RLCones::LoadCourseFileList() 
+{
+	std::string filesDirectory = gameWrapper->GetDataFolder().string() + "/RLCones";
+	if (!fs::exists(filesDirectory)) 
+	{
+		fs::create_directory(filesDirectory);
+		return;
+	}
+
+	for (const auto& entry : fs::directory_iterator(filesDirectory)) 
+	{
+		LOG(entry.path().filename().string());
+	}		
 }
 
 void RLCones::GetBall(unsigned char forceMode, float forceAmount)

@@ -57,6 +57,11 @@ void RLCones::RenderSettings() {
 		if (ImGui::IsItemHovered()) {
 			ImGui::SetTooltip("Clear your custom spawns from the field");
 		}
+
+		const char* items[] = { "AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIIIIII", "JJJJ", "KKKKKKK" };
+		static int item_current = 0;
+		ImGui::Combo("combo", &item_current, items, IM_ARRAYSIZE(items));
+
 	}
 
 	//BallOnTop
