@@ -102,6 +102,20 @@ void RLCones::RegisterNotifiers()
 		bpm.LoadCourse(course);
 
 	}, "Load Custom Course", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
+
+	//save custom course to file
+	_globalCvarManager->registerNotifier("rlcones_save_course", [&gw = this->gameWrapper, &bpm = this->_bPadManager](std::vector<std::string> commands) {
+		CVarWrapper isEnabled = _globalCvarManager->getCvar("rlcones_enabled");
+		if (isEnabled.IsNull() || !isEnabled.getBoolValue() || !gw->IsInFreeplay())
+			return;
+
+		JSONFileParser jsonFileParser = JSONFileParser();
+		std::string filePath = gw->GetDataFolder().string() + "/BoostPads.json";
+		std::string fileData = bpm.SerializeCustomCones();
+		jsonFileParser.WriteFile(filePath, fileData);
+
+
+	}, "Save Course To File", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
 }
 
 void RLCones::RegisterHookEvents()

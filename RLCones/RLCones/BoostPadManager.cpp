@@ -103,3 +103,24 @@ void BoostPadManager::LoadCourse(Course course)
 		_customCylinder2Boostpads.push_back(CreateCylinder2BoostPad(Vector(it->X, it->Y, it->Z), it->IsBig));
 	}
 }
+
+std::string BoostPadManager::SerializeCustomCones() 
+{
+	json data;
+
+	for (std::vector<Cylinder2BoostPad>::iterator it = _customCylinder2Boostpads.begin(); it != _customCylinder2Boostpads.end(); ++it)
+	{
+		Vector pos = it->_boostPad.GetPosition();
+		bool isBig = it->_boostPad.GetIsBigPad();
+		json item = {
+			{"x",pos.X},
+			{"y",pos.Y},
+			{"z",pos.Z},
+			{"isBig", isBig}
+		};
+		data.push_back(item);
+	}
+	json root;
+	root["data"] = data;
+	return root.dump();
+}
