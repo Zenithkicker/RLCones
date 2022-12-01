@@ -56,5 +56,6 @@ class RLCones: public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod::Plug
 	void OnFreeplayDestroy(std::string eventName);
 	void OnKeyPressed(ActorWrapper aw, void* params, std::string eventName);
 	void LoadCourseFileList();
+	const char* selectedCourse = NULL;
 };
 

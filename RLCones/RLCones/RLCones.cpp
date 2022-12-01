@@ -72,7 +72,7 @@ void RLCones::RegisterNotifiers()
 
 
 	//clear custom spawns
-	_globalCvarManager->registerNotifier("rlcones_clear_spawns", [&gw = this->gameWrapper, &bpm = this->_bPadManager](std::vector<std::string> commands) {
+	_globalCvarManager->registerNotifier("rlcones_clear_spawns", [&gw = this->gameWrapper, &bpm = this->_bPadManager, &_selectedCourse = this->selectedCourse](std::vector<std::string> commands) {
 		CVarWrapper isEnabled = _globalCvarManager->getCvar("rlcones_enabled");
 		if (isEnabled.IsNull() || !isEnabled.getBoolValue() || !gw->IsInFreeplay())
 			return;
@@ -83,14 +83,15 @@ void RLCones::RegisterNotifiers()
 			return;
 
 		bpm.ClearCustomSpawns();
-		
+		_selectedCourse = NULL;
+
 	}, "Clear the custom spawns from the field", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
 
 
 
 
 	//load custom course
-	_globalCvarManager->registerNotifier("rlcones_load_course", [&gw = this->gameWrapper, &bpm = this->_bPadManager](std::vector<std::string> commands) {
+	_globalCvarManager->registerNotifier("rlcones_load_course", [&gw = this->gameWrapper, &bpm = this->_bPadManager, &_selectedCourse = this->selectedCourse](std::vector<std::string> commands) {
 		CVarWrapper isEnabled = _globalCvarManager->getCvar("rlcones_enabled");
 		if (isEnabled.IsNull() || !isEnabled.getBoolValue() || !gw->IsInFreeplay())
 			return;
@@ -100,13 +101,14 @@ void RLCones::RegisterNotifiers()
 		if (cvarBoostpadCustomIsEnabled.IsNull() || cvarBoostpadCustomIsEnabled.getBoolValue())
 			return;
 
-		JSONFileParser jsonFileParser = JSONFileParser();
-		std::string filePath = gw->GetDataFolder().string() + "/RLCones/BoostPads.json";
+		JSONFileParser jsonFileParser = JSONFileParser();				
+
+		std::string filePath = gw->GetDataFolder().string() + "/RLCones/" + _selectedCourse;
 		json data = jsonFileParser.ReadFile(filePath);
 		Course course = Course(data);
 		bpm.LoadCourse(course);
 
-	}, "Load Custom Course", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
+	}, "Load Course From File", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
 
 	//save custom course to file
 	_globalCvarManager->registerNotifier("rlcones_save_course", [&gw = this->gameWrapper, &bpm = this->_bPadManager](std::vector<std::string> commands) {

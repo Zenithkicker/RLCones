@@ -58,18 +58,20 @@ void RLCones::RenderSettings() {
 			ImGui::SetTooltip("Clear your custom spawns from the field");
 		}
 
-		int selectedIndex = 0; // you need to store this state somewhere
-
-		// later in your code...
-		if (ImGui::BeginCombo("combo","preview"))
+		const char* selectedDisplayText = selectedCourse;
+		if (NULL == selectedDisplayText)
+			selectedDisplayText = "Select Course File...";
+		
+		//Course File Loading
+		if (ImGui::BeginCombo("", selectedDisplayText))
 		{
 			for (int i = 0; i < _custombPadFileList.size(); ++i) 
 			{
-				const bool isSelected = (selectedIndex == i);
-				const char* item = _custombPadFileList.at(i).data();
-				if (ImGui::Selectable(item, isSelected))
+				char* indexItem = _custombPadFileList.at(i).data();
+				const bool isSelected = (selectedCourse == indexItem);
+				if (ImGui::Selectable(indexItem, isSelected))
 				{
-					selectedIndex = i;
+					selectedCourse = indexItem;
 				}
 
 				// Set the initial focus when opening the combo
@@ -79,6 +81,13 @@ void RLCones::RenderSettings() {
 				}
 			}
 			ImGui::EndCombo();
+		}
+
+
+		if (ImGui::Button("Load Course File")) {
+			gameWrapper->Execute([this](GameWrapper* gw) {
+				cvarManager->executeCommand("rlcones_load_course");
+			});
 		}
 
 	}
