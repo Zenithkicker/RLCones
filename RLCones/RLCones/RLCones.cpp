@@ -102,6 +102,8 @@ void RLCones::RegisterNotifiers()
 			return;
 
 		JSONFileParser jsonFileParser = JSONFileParser();				
+		std::string s = _selectedCourse;
+		LOG("loading course file: " + s);
 
 		std::string filePath = gw->GetDataFolder().string() + "/RLCones/" + _selectedCourse;
 		json data = jsonFileParser.ReadFile(filePath);
@@ -111,7 +113,7 @@ void RLCones::RegisterNotifiers()
 	}, "Load Course From File", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
 
 	//save custom course to file
-	_globalCvarManager->registerNotifier("rlcones_save_course", [&gw = this->gameWrapper, &bpm = this->_bPadManager](std::vector<std::string> commands) {
+	_globalCvarManager->registerNotifier("rlcones_save_course", [&gw = this->gameWrapper, &bpm = this->_bPadManager, &fileList = this->_custombPadFileList](std::vector<std::string> commands) {
 		CVarWrapper isEnabled = _globalCvarManager->getCvar("rlcones_enabled");
 		if (isEnabled.IsNull() || !isEnabled.getBoolValue() || !gw->IsInFreeplay())
 			return;
@@ -122,7 +124,8 @@ void RLCones::RegisterNotifiers()
 			return;
 
 		JSONFileParser jsonFileParser = JSONFileParser();
-		std::string filePath = gw->GetDataFolder().string() + "/RLCones/BoostPads.json";
+		int fileCount = fileList.size();
+		std::string filePath = gw->GetDataFolder().string() + "/RLCones/BoostPads" + std::to_string(fileCount) + ".json";
 		std::string fileData = bpm.SerializeCustomCones();
 		jsonFileParser.WriteFile(filePath, fileData);
 
