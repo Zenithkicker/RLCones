@@ -36,28 +36,28 @@ void RLCones::RenderSettings() {
 		ImGui::SetTooltip("Enable/Disable Standard Cones");
 	}
 
+
 	//Custom Cones Enable/Disable
 	CVarWrapper enableCustomCones = cvarManager->getCvar("rlcones_boostpad_custom_render_enabled");
-	if (!enableCustomCones) { return; }
-	bool customEnabled = enableCustomCones.getBoolValue();
-	if (ImGui::Checkbox("Enable Custom Cones", &customEnabled)) {
-		enableCustomCones.setValue(customEnabled);
-	}
-	if (ImGui::IsItemHovered()) {
-		ImGui::SetTooltip("Enable/Disable Custom Cones. Spawn your own cones based on car location. Left Alt for small cones Right Alt for large ones. Disable this to show button to clear custom spawns");
-	}
+	bool customIsEnabled = enableCustomCones.getBoolValue();
 
-	//BallOnTop
-	if (!customEnabled) {
-		if (ImGui::Button("Clear Spawns")) {
+
+	//When Custom Course Loaded
+	//Show an unload button to clear spawns
+	if (customIsEnabled)
+	{
+		//Show Unload button
+		if (ImGui::Button("Unload Course File")) {
 			gameWrapper->Execute([this](GameWrapper* gw) {
-				cvarManager->executeCommand("rlcones_clear_spawns");
-				});
+				cvarManager->executeCommand("rlcones_unload_course");
+			});
 		}
-		if (ImGui::IsItemHovered()) {
-			ImGui::SetTooltip("Clear your custom spawns from the field");
-		}
+	}
 
+	//When Custom Course UnLoaded
+	//Allow loading a new course file 
+	if (!customIsEnabled)
+	{
 		const char* selectedDisplayText = selectedCourse;
 		if (NULL == selectedDisplayText)
 			selectedDisplayText = "Select Course File...";
@@ -89,7 +89,6 @@ void RLCones::RenderSettings() {
 				cvarManager->executeCommand("rlcones_load_course");
 			});
 		}
-
 	}
 
 	//BallOnTop
