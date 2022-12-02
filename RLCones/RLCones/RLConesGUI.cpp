@@ -47,7 +47,7 @@ void RLCones::RenderSettings() {
 	if (customIsEnabled)
 	{
 		//Show Unload button
-		if (ImGui::Button("Unload Course File")) {
+		if (ImGui::Button("Unload Course")) {
 			gameWrapper->Execute([this](GameWrapper* gw) {
 				cvarManager->executeCommand("rlcones_unload_course");
 			});
@@ -60,7 +60,7 @@ void RLCones::RenderSettings() {
 	{
 		const char* selectedDisplayText = selectedCourse;
 		if (NULL == selectedDisplayText)
-			selectedDisplayText = "Select Course File...";
+			selectedDisplayText = "Select Course...";
 		
 		//Course File Loading
 		if (ImGui::BeginCombo("", selectedDisplayText))
@@ -84,7 +84,7 @@ void RLCones::RenderSettings() {
 		}
 
 
-		if (ImGui::Button("Load Course File")) {
+		if (ImGui::Button("Load Course")) {
 			gameWrapper->Execute([this](GameWrapper* gw) {
 				cvarManager->executeCommand("rlcones_load_course");
 			});
