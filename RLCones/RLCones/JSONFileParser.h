@@ -8,6 +8,6 @@ class JSONFileParser
 public:
 	JSONFileParser();
 	json ReadFile(std::string filePath);
-	void WriteFile(std::string filePath, std::string data);
+	void WriteFile(std::string filePath, json jsonData);
 };
 

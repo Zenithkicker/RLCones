@@ -19,7 +19,7 @@ public:
 	void SpawnCustomCylinder2Gate(Vector spawnPos, float gateDistanceFromCar, bool isBigPad = false);
 	void ClearCustomSpawns();
 	void LoadCourse(Course course);
-	std::string SerializeCustomCones();
+	json CreateCustomConesJson();
 };
 
 

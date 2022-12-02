@@ -104,7 +104,7 @@ void BoostPadManager::LoadCourse(Course course)
 	}
 }
 
-std::string BoostPadManager::SerializeCustomCones() 
+json BoostPadManager::CreateCustomConesJson()
 {
 	json data;
 
@@ -122,5 +122,5 @@ std::string BoostPadManager::SerializeCustomCones()
 	}
 	json root;
 	root["data"] = data;
-	return root.dump();
+	return root;
 }

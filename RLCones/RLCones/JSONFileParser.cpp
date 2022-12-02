@@ -22,8 +22,8 @@ json JSONFileParser::ReadFile(std::string filePath)
 	return json();
 }
 
-void JSONFileParser::WriteFile(std::string filePath, std::string data)
+void JSONFileParser::WriteFile(std::string filePath, json jsonData)
 {
 	std::ofstream stream(filePath);
-	stream << data;
+	stream << jsonData.dump();
 }

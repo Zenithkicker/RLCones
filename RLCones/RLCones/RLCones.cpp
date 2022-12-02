@@ -126,7 +126,7 @@ void RLCones::RegisterNotifiers()
 		JSONFileParser jsonFileParser = JSONFileParser();
 		int fileCount = fileList.size();
 		std::string filePath = gw->GetDataFolder().string() + "/RLCones/BoostPads" + std::to_string(fileCount) + ".json";
-		std::string fileData = bpm.SerializeCustomCones();
+		json fileData = bpm.CreateCustomConesJson();
 		jsonFileParser.WriteFile(filePath, fileData);
 
 
