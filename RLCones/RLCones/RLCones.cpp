@@ -267,7 +267,7 @@ void RLCones::RunBallCollisionChecks(unsigned char forceMode, float forceAmount)
 	
 	CVarWrapper cvarBoostpadStandardIsEnabled = _globalCvarManager->getCvar("rlcones_boostpad_standard_render_enabled");
 	CVarWrapper cvarBoostpadCustomIsEnabled = _globalCvarManager->getCvar("rlcones_boostpad_custom_render_enabled");
-
+	
 	if (!cvarBoostpadStandardIsEnabled.IsNull() && cvarBoostpadStandardIsEnabled.getBoolValue()) {
 		for (int i = 0; i < _bPadManager.boostPadsCount; i++) {
 			HandleBallPadCollision(ball, _bPadManager._standardCylinder2Boostpads[i], forceMode, forceAmount);
@@ -306,6 +306,7 @@ void RLCones::Render(CanvasWrapper canvas)
 
 	CVarWrapper cvarBoostpadStandardIsEnabled = _globalCvarManager->getCvar("rlcones_boostpad_standard_render_enabled");
 	CVarWrapper cvarBoostpadCustomIsEnabled = _globalCvarManager->getCvar("rlcones_boostpad_custom_render_enabled");
+	CVarWrapper cvarEnableCustomCreateCones = _globalCvarManager->getCvar("rlcones_boostpad_custom_create_enabled");
 
 	if (!cvarBoostpadStandardIsEnabled.IsNull() && cvarBoostpadStandardIsEnabled.getBoolValue()) 
 	{
@@ -315,7 +316,8 @@ void RLCones::Render(CanvasWrapper canvas)
 			pad.Draw(canvas, frust);
 		}
 	}
-	if (!cvarBoostpadCustomIsEnabled.IsNull() && cvarBoostpadCustomIsEnabled.getBoolValue()) 
+	if ((!cvarBoostpadCustomIsEnabled.IsNull() && cvarBoostpadCustomIsEnabled.getBoolValue())
+		|| !cvarEnableCustomCreateCones.IsNull() && cvarEnableCustomCreateCones.getBoolValue())
 	{
 		for (std::vector<Cylinder2BoostPad>::iterator it = _bPadManager._customCylinder2Boostpads.begin(); it != _bPadManager._customCylinder2Boostpads.end(); ++it) 
 		{			
@@ -331,9 +333,21 @@ void RLCones::OnKeyPressed(ActorWrapper aw, void* params, std::string eventName)
 	if (cvarGlobalIsEnabled.IsNull() || !cvarGlobalIsEnabled.getBoolValue())
 		return;
 
+	bool canUseKeys = false;
+
 	CVarWrapper cvarBoostpadCustomIsEnabled = _globalCvarManager->getCvar("rlcones_boostpad_custom_render_enabled");
-	if (cvarBoostpadCustomIsEnabled.IsNull() || !cvarBoostpadCustomIsEnabled.getBoolValue())
+	if (cvarBoostpadCustomIsEnabled.IsNull())
 		return;
+
+	CVarWrapper enableCustomCreateCones = _globalCvarManager->getCvar("rlcones_boostpad_custom_create_enabled");
+	if (enableCustomCreateCones.IsNull())
+		return;
+
+	canUseKeys = cvarBoostpadCustomIsEnabled.getBoolValue() || enableCustomCreateCones.getBoolValue();
+
+	if (!canUseKeys)
+		return;
+
 
 	KeyPressParams* keyPressData = (KeyPressParams*)params;
 	if (keyPressData->EventType != EInputEvent::Released)
@@ -342,6 +356,7 @@ void RLCones::OnKeyPressed(ActorWrapper aw, void* params, std::string eventName)
 	ServerWrapper sw = gameWrapper->GetGameEventAsServer();
 	if (sw.IsNull())
 		return;
+
 	CarWrapper cw = sw.GetGameCar();
 	if (cw.IsNull())
 		return;
