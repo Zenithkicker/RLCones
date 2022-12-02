@@ -107,20 +107,26 @@ void RLCones::RegisterNotifiers()
 			return;
 		}			
 
-		JSONFileParser jsonFileParser = JSONFileParser();				
-		std::string s = _selectedCourse;
-		LOG("loading course file: " + s);
-
-		std::string filePath = gw->GetDataFolder().string() + "/RLCones/" + _selectedCourse;
-		json data = jsonFileParser.ReadFile(filePath);
-		if (NULL == data)
+		try 
 		{
-			LOG("Could not read file: " + filePath);
-			_selectedCourse = NULL;
-			return;
+			JSONFileParser jsonFileParser = JSONFileParser();
+			std::string s = _selectedCourse;
+			LOG("loading course file: " + s);
+
+			std::string filePath = gw->GetDataFolder().string() + "/RLCones/" + _selectedCourse;
+			json data = jsonFileParser.ReadFile(filePath);
+			if (NULL == data)
+			{
+				LOG("Could not read file: " + filePath);
+				_selectedCourse = NULL;
+				return;
+			}
+			Course course = Course(data);
+			bpm.LoadCourse(course);
 		}
-		Course course = Course(data);
-		bpm.LoadCourse(course);
+		catch (std::exception& e) {
+			LOG("{}", e.what());
+		}
 
 	}, "Load Course From File", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
 
