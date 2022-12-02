@@ -9,7 +9,30 @@ std::string RLCones::GetPluginName() {
 	return "RLCones Plugin";
 }
 
-void RLCones::RenderSettings() {	
+void RLCones::RenderSettings() 
+{		
+	CVarWrapper enableCustomCreateCones = _globalCvarManager->getCvar("rlcones_boostpad_custom_create_enabled");
+	bool customCreateIsEnabled = enableCustomCreateCones.getBoolValue();
+
+	if (customCreateIsEnabled) 
+	{
+		//Show Save
+		if (ImGui::Button("Save Course")) {
+			gameWrapper->Execute([this](GameWrapper* gw) {
+				cvarManager->executeCommand("rlcones_create_course_save");
+			});
+		}
+
+		//Show Cancel
+		if (ImGui::Button("Cancel")) {
+			gameWrapper->Execute([this](GameWrapper* gw) {
+				cvarManager->executeCommand("rlcones_create_course_cancel");
+			});
+		}
+
+		return;
+	}
+
 
 	//Global Enable/Disable
 	CVarWrapper cvarGlobalEnable = cvarManager->getCvar("rlcones_enabled");
@@ -36,11 +59,9 @@ void RLCones::RenderSettings() {
 		ImGui::SetTooltip("Enable/Disable Standard Cones");
 	}
 
-
 	//Custom Cones Enable/Disable
 	CVarWrapper enableCustomCones = cvarManager->getCvar("rlcones_boostpad_custom_render_enabled");
 	bool customIsEnabled = enableCustomCones.getBoolValue();
-
 
 	//When Custom Course Loaded
 	//Show an unload button to clear spawns
@@ -56,6 +77,7 @@ void RLCones::RenderSettings() {
 
 	//When Custom Course UnLoaded
 	//Allow loading a new course file 
+	//Allow creating a new course file
 	if (!customIsEnabled)
 	{
 		const char* selectedDisplayText = selectedCourse;
@@ -87,6 +109,12 @@ void RLCones::RenderSettings() {
 		if (ImGui::Button("Load Course")) {
 			gameWrapper->Execute([this](GameWrapper* gw) {
 				cvarManager->executeCommand("rlcones_load_course");
+			});
+		}
+
+		if (ImGui::Button("Create Course")) {
+			gameWrapper->Execute([this](GameWrapper* gw) {
+				cvarManager->executeCommand("rlcones_create_course_enable");
 			});
 		}
 	}
