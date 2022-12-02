@@ -101,12 +101,24 @@ void RLCones::RegisterNotifiers()
 		if (cvarBoostpadCustomIsEnabled.IsNull() || cvarBoostpadCustomIsEnabled.getBoolValue())
 			return;
 
+		if (NULL == _selectedCourse) 
+		{
+			LOG("Please Select Course");
+			return;
+		}			
+
 		JSONFileParser jsonFileParser = JSONFileParser();				
 		std::string s = _selectedCourse;
 		LOG("loading course file: " + s);
 
 		std::string filePath = gw->GetDataFolder().string() + "/RLCones/" + _selectedCourse;
 		json data = jsonFileParser.ReadFile(filePath);
+		if (NULL == data)
+		{
+			LOG("Could not read file: " + filePath);
+			_selectedCourse = NULL;
+			return;
+		}
 		Course course = Course(data);
 		bpm.LoadCourse(course);
 

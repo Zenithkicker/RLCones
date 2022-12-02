@@ -10,6 +10,9 @@ json JSONFileParser::ReadFile(std::string filePath)
 {
 	try {
 		LOG(filePath);
+		if (!std::filesystem::exists(filePath))
+			return NULL;
+
 		std::ifstream f(filePath);
 		LOG("file loaded. parsing...");
 		json data = json::parse(f);
@@ -19,7 +22,7 @@ json JSONFileParser::ReadFile(std::string filePath)
 	catch (std::exception& e) {
 		LOG("{}", e.what());
 	}
-	return json();
+	return NULL;
 }
 
 void JSONFileParser::WriteFile(std::string filePath, json jsonData)
