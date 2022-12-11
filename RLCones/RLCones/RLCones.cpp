@@ -160,32 +160,43 @@ void RLCones::RegisterNotifiers()
 
 	//create course save
 	_globalCvarManager->registerNotifier("rlcones_create_course_save", [&gw = this->gameWrapper, &bpm = this->_bPadManager, &_selectedCourse = this->selectedCourse, &fileList = this->_custombPadFileList](std::vector<std::string> commands) {
-		CVarWrapper isEnabled = _globalCvarManager->getCvar("rlcones_enabled");
-		if (isEnabled.IsNull() || !isEnabled.getBoolValue() || !gw->IsInFreeplay())
-			return;	
+		try {
 
-		JSONFileParser jsonFileParser = JSONFileParser();
-		int fileCount = fileList.size();
-		std::string filePath = gw->GetDataFolder().string() + "/RLCones/BoostPads" + std::to_string(fileCount) + ".json";
-		json fileData = bpm.CreateCustomConesJson();
-		jsonFileParser.WriteFile(filePath, fileData);
-		LOG("Course Created!");
-		CVarWrapper enableCustomCreateCones = _globalCvarManager->getCvar("rlcones_boostpad_custom_create_enabled");
-		enableCustomCreateCones.setValue(false);
 
-		//todo: the below is LoadCourseFileList() call that method instead
-		std::string filesDirectory = gw->GetDataFolder().string() + "/RLCones";
-		if (!fs::exists(filesDirectory))
-		{
-			fs::create_directory(filesDirectory);
-			return;
+			CVarWrapper isEnabled = _globalCvarManager->getCvar("rlcones_enabled");
+			if (isEnabled.IsNull() || !isEnabled.getBoolValue() || !gw->IsInFreeplay())
+				return;
+
+			JSONFileParser jsonFileParser = JSONFileParser();
+			int fileCount = fileList.size();
+			std::string createdFileName = "BoostPads" + std::to_string(fileCount) + ".json";
+			std::string filePath = gw->GetDataFolder().string() + "/RLCones/" + createdFileName;
+			json fileData = bpm.CreateCustomConesJson();
+			jsonFileParser.WriteFile(filePath, fileData);
+			LOG("Course Created!");
+			CVarWrapper enableCustomCreateCones = _globalCvarManager->getCvar("rlcones_boostpad_custom_create_enabled");
+			enableCustomCreateCones.setValue(false);
+
+			//todo: the below is LoadCourseFileList() call that method instead
+			std::string filesDirectory = gw->GetDataFolder().string() + "/RLCones";
+			if (!fs::exists(filesDirectory))
+			{
+				fs::create_directory(filesDirectory);
+				return;
+			}
+
+			fileList.clear();
+
+			for (const auto& entry : fs::directory_iterator(filesDirectory))
+			{
+				fileList.push_back(entry.path().filename().string());
+			}
+
+			_selectedCourse = createdFileName.c_str();
+			_globalCvarManager->executeCommand("rlcones_load_course");
 		}
-
-		fileList.clear();
-
-		for (const auto& entry : fs::directory_iterator(filesDirectory))
-		{
-			fileList.push_back(entry.path().filename().string());
+		catch (std::exception& e) {
+			LOG("[Error][rlcones_create_course_save]", e.what());
 		}
 
 	}, "Create Course Save", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
