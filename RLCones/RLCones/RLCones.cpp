@@ -47,49 +47,55 @@ void RLCones::RegisterNotifiers()
 {
 	//Place the ball on top of the player
 	_globalCvarManager->registerNotifier("rlcones_ballontop", [&gw = this->gameWrapper](std::vector<std::string> commands) {
-		CVarWrapper isEnabled = _globalCvarManager->getCvar("rlcones_enabled");
-		if (isEnabled.IsNull() || !isEnabled.getBoolValue() || !gw->IsInFreeplay())
-			return;
+		try 
+		{
+			CVarWrapper isEnabled = _globalCvarManager->getCvar("rlcones_enabled");
+			if (isEnabled.IsNull() || !isEnabled.getBoolValue() || !gw->IsInFreeplay())
+				return;
 
-		ServerWrapper tutorial = gw->GetGameEventAsServer();
+			ServerWrapper tutorial = gw->GetGameEventAsServer();
 
-		if (tutorial.IsNull() || tutorial.GetGameBalls().Count() == 0)
-			return;
+			if (tutorial.IsNull() || tutorial.GetGameBalls().Count() == 0)
+				return;
 
-		BallWrapper ball = tutorial.GetGameBalls().Get(0);
-		CarWrapper car = tutorial.GetGameCar();
-		if (ball.IsNull() || car.IsNull())
-			return;
-		Vector playerVelocity = car.GetVelocity();
-		Vector addToBall = Vector(playerVelocity.X, playerVelocity.Y, 170);
+			BallWrapper ball = tutorial.GetGameBalls().Get(0);
+			CarWrapper car = tutorial.GetGameCar();
+			if (ball.IsNull() || car.IsNull())
+				return;
+			Vector playerVelocity = car.GetVelocity();
+			Vector addToBall = Vector(playerVelocity.X, playerVelocity.Y, 170);
 
-		addToBall.X = max(min(20.0f, addToBall.X), -20.0f);//maybe limit the X a bit more
-		addToBall.Y = max(min(30.0f, addToBall.Y), -30.0f);
+			addToBall.X = max(min(20.0f, addToBall.X), -20.0f);//maybe limit the X a bit more
+			addToBall.Y = max(min(30.0f, addToBall.Y), -30.0f);
 
-		ball.SetLocation(car.GetLocation() + addToBall);
-		ball.SetVelocity(playerVelocity);
+			ball.SetLocation(car.GetLocation() + addToBall);
+			ball.SetVelocity(playerVelocity);
+		}
+		catch (std::exception& e) {
+			LOG("[Error][rlcones_ballontop]", e.what());
+		}
 	}, "Spawns the ball on top of your car", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
 
 
 	//load custom course
 	_globalCvarManager->registerNotifier("rlcones_load_course", [&gw = this->gameWrapper, &bpm = this->_bPadManager, &_selectedCourse = this->selectedCourse](std::vector<std::string> commands) {
-		CVarWrapper isEnabled = _globalCvarManager->getCvar("rlcones_enabled");
-		if (isEnabled.IsNull() || !isEnabled.getBoolValue() || !gw->IsInFreeplay())
-			return;
-
-		//must disable custom boost pad rendering first
-		CVarWrapper cvarBoostpadCustomIsEnabled = _globalCvarManager->getCvar("rlcones_boostpad_custom_render_enabled");
-		if (cvarBoostpadCustomIsEnabled.IsNull() || cvarBoostpadCustomIsEnabled.getBoolValue())
-			return;
-
-		if (NULL == _selectedCourse) 
+		try
 		{
-			LOG("Please Select Course");
-			return;
-		}			
+			CVarWrapper isEnabled = _globalCvarManager->getCvar("rlcones_enabled");
+			if (isEnabled.IsNull() || !isEnabled.getBoolValue() || !gw->IsInFreeplay())
+				return;
 
-		try 
-		{
+			//must disable custom boost pad rendering first
+			CVarWrapper cvarBoostpadCustomIsEnabled = _globalCvarManager->getCvar("rlcones_boostpad_custom_render_enabled");
+			if (cvarBoostpadCustomIsEnabled.IsNull() || cvarBoostpadCustomIsEnabled.getBoolValue())
+				return;
+
+			if (NULL == _selectedCourse) 
+			{
+				LOG("Please Select Course");
+				return;
+			}			
+		
 			JSONFileParser jsonFileParser = JSONFileParser();
 			std::string s = _selectedCourse;
 			LOG("loading course file: " + s);
@@ -110,7 +116,7 @@ void RLCones::RegisterNotifiers()
 			enableCustomCones.setValue(true);
 		}
 		catch (std::exception& e) {
-			LOG("{}", e.what());
+			LOG("[Error][rlcones_load_course]", e.what());
 		}
 
 	}, "Load Course", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
@@ -118,41 +124,103 @@ void RLCones::RegisterNotifiers()
 
 	//unload course
 	_globalCvarManager->registerNotifier("rlcones_unload_course", [&gw = this->gameWrapper, &bpm = this->_bPadManager, &_selectedCourse = this->selectedCourse](std::vector<std::string> commands) {
-		CVarWrapper isEnabled = _globalCvarManager->getCvar("rlcones_enabled");
-		if (isEnabled.IsNull() || !isEnabled.getBoolValue() || !gw->IsInFreeplay())
-			return;
+		try 
+		{
+			CVarWrapper isEnabled = _globalCvarManager->getCvar("rlcones_enabled");
+			if (isEnabled.IsNull() || !isEnabled.getBoolValue() || !gw->IsInFreeplay())
+				return;
 
-		//disable custom cones
-		CVarWrapper enableCustomCones = _globalCvarManager->getCvar("rlcones_boostpad_custom_render_enabled");
-		enableCustomCones.setValue(false);
+			//disable custom cones
+			CVarWrapper enableCustomCones = _globalCvarManager->getCvar("rlcones_boostpad_custom_render_enabled");
+			enableCustomCones.setValue(false);
 
-		//clear selected course
-		_selectedCourse = NULL;
+			//clear selected course
+			_selectedCourse = NULL;
 
-		//clear spawns
-		bpm.ClearCustomSpawns();		
+			//clear spawns
+			bpm.ClearCustomSpawns();
+		}
+		catch (std::exception& e) {
+			LOG("[Error][rlcones_unload_course]", e.what());
+		}
 
 	}, "Unload Course", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
 
+	//delete course
+	_globalCvarManager->registerNotifier("rlcones_delete_course", [&gw = this->gameWrapper, &bpm = this->_bPadManager, &_selectedCourse = this->selectedCourse, &fileList = this->_custombPadFileList](std::vector<std::string> commands) {
+		try 
+		{
+			CVarWrapper isEnabled = _globalCvarManager->getCvar("rlcones_enabled");
+			if (isEnabled.IsNull() || !isEnabled.getBoolValue() || !gw->IsInFreeplay())
+				return;
+
+			//disable custom cones
+			CVarWrapper enableCustomCones = _globalCvarManager->getCvar("rlcones_boostpad_custom_render_enabled");
+			enableCustomCones.setValue(false);
+
+			if (NULL == _selectedCourse)
+				return;
+
+			std::string filePath = gw->GetDataFolder().string() + "/RLCones/" + _selectedCourse;
+			LOG("File To Delete: " + filePath);
+			if (fs::exists(filePath))
+			{
+				fs::remove(filePath);
+			}
+
+			//clear selected course
+			_selectedCourse = NULL;
+
+			//clear spawns
+			bpm.ClearCustomSpawns();
+
+			//refresh list
+			//todo: the below is LoadCourseFileList() call that method instead
+			std::string filesDirectory = gw->GetDataFolder().string() + "/RLCones";
+			if (!fs::exists(filesDirectory))
+			{
+				fs::create_directory(filesDirectory);
+				return;
+			}
+
+			fileList.clear();
+
+			for (const auto& entry : fs::directory_iterator(filesDirectory))
+			{
+				fileList.push_back(entry.path().filename().string());
+			}
+			//end todo
+		}
+		catch (std::exception& e) {
+			LOG("[Error][rlcones_delete_course]", e.what());
+		}
+
+	}, "Delete Course", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
 
 	//create course enable
 	_globalCvarManager->registerNotifier("rlcones_create_course_enable", [&gw = this->gameWrapper, &bpm = this->_bPadManager, &_selectedCourse = this->selectedCourse](std::vector<std::string> commands) {
-		CVarWrapper isEnabled = _globalCvarManager->getCvar("rlcones_enabled");
-		if (isEnabled.IsNull() || !isEnabled.getBoolValue() || !gw->IsInFreeplay())
-			return;
+		try 
+		{
+			CVarWrapper isEnabled = _globalCvarManager->getCvar("rlcones_enabled");
+			if (isEnabled.IsNull() || !isEnabled.getBoolValue() || !gw->IsInFreeplay())
+				return;
 
-		//disable custom cones
-		CVarWrapper enableCustomCones = _globalCvarManager->getCvar("rlcones_boostpad_custom_render_enabled");
-		enableCustomCones.setValue(false);
+			//disable custom cones
+			CVarWrapper enableCustomCones = _globalCvarManager->getCvar("rlcones_boostpad_custom_render_enabled");
+			enableCustomCones.setValue(false);
 
-		//clear selected course
-		_selectedCourse = NULL;
+			//clear selected course
+			_selectedCourse = NULL;
 
-		//clear spawns
-		bpm.ClearCustomSpawns();
+			//clear spawns
+			bpm.ClearCustomSpawns();
 
-		CVarWrapper enableCustomCreateCones = _globalCvarManager->getCvar("rlcones_boostpad_custom_create_enabled");		
-		enableCustomCreateCones.setValue(true);
+			CVarWrapper enableCustomCreateCones = _globalCvarManager->getCvar("rlcones_boostpad_custom_create_enabled");
+			enableCustomCreateCones.setValue(true);
+		}
+		catch (std::exception& e) {
+			LOG("[Error][rlcones_create_course_enable]", e.what());
+		}
 
 	}, "Create Course Enable", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
 
@@ -160,9 +228,8 @@ void RLCones::RegisterNotifiers()
 
 	//create course save
 	_globalCvarManager->registerNotifier("rlcones_create_course_save", [&gw = this->gameWrapper, &bpm = this->_bPadManager, &_selectedCourse = this->selectedCourse, &fileList = this->_custombPadFileList](std::vector<std::string> commands) {
-		try {
-
-
+		try 
+		{
 			CVarWrapper isEnabled = _globalCvarManager->getCvar("rlcones_enabled");
 			if (isEnabled.IsNull() || !isEnabled.getBoolValue() || !gw->IsInFreeplay())
 				return;
@@ -191,6 +258,7 @@ void RLCones::RegisterNotifiers()
 			{
 				fileList.push_back(entry.path().filename().string());
 			}
+			//end todo
 
 			_selectedCourse = createdFileName.c_str();
 			_globalCvarManager->executeCommand("rlcones_load_course");
@@ -204,13 +272,19 @@ void RLCones::RegisterNotifiers()
 
 	//create course cancel
 	_globalCvarManager->registerNotifier("rlcones_create_course_cancel", [&gw = this->gameWrapper, &bpm = this->_bPadManager, &_selectedCourse = this->selectedCourse](std::vector<std::string> commands) {
-		CVarWrapper isEnabled = _globalCvarManager->getCvar("rlcones_enabled");
-		if (isEnabled.IsNull() || !isEnabled.getBoolValue() || !gw->IsInFreeplay())
-			return;
+		
+		try 
+		{
+			CVarWrapper isEnabled = _globalCvarManager->getCvar("rlcones_enabled");
+			if (isEnabled.IsNull() || !isEnabled.getBoolValue() || !gw->IsInFreeplay())
+				return;
 
-		CVarWrapper enableCustomCreateCones = _globalCvarManager->getCvar("rlcones_boostpad_custom_create_enabled");
-		enableCustomCreateCones.setValue(false);
-
+			CVarWrapper enableCustomCreateCones = _globalCvarManager->getCvar("rlcones_boostpad_custom_create_enabled");
+			enableCustomCreateCones.setValue(false);
+		}
+		catch (std::exception& e) {
+			LOG("[Error][rlcones_create_course_cancel]", e.what());
+		}
 
 	}, "Create Course Cancel", PERMISSION_FREEPLAY | PERMISSION_PAUSEMENU_CLOSED);
 

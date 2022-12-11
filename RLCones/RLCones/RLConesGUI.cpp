@@ -117,6 +117,12 @@ void RLCones::RenderSettings()
 				cvarManager->executeCommand("rlcones_create_course_enable");
 			});
 		}
+
+		if (ImGui::Button("Delete Course")) {
+			gameWrapper->Execute([this](GameWrapper* gw) {
+				cvarManager->executeCommand("rlcones_delete_course");
+				});
+		}
 	}
 
 	//BallOnTop
