@@ -15,6 +15,7 @@ BoostPad::BoostPad(Vector location)
 
 BoostPad::BoostPad(Vector location, bool bigPad)
 {
+	location.Z = 90;//use hardcoded value
 	position = location;
 	IsBigPad = bigPad;
 }
@@ -42,10 +43,7 @@ float BoostPad::GetHeight()
 void BoostPad::SetSpawnPosition(Vector desiredPosition)
 {
 	position = desiredPosition;
-	position.Z = 70;
-	if (IsBigPad) {
-		position.Z = 73;
-	}
+	position.Z = 90;//hardcoding 90 as that seems to be good for both
 }
 
 void BoostPad::SetIsBigPad(bool isBig) 

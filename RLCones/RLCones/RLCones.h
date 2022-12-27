@@ -49,6 +49,9 @@ class RLCones: public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod::Plug
 	virtual void GetBall(unsigned char forceMode, float forceAmount);
 	virtual void HandleBallPadCollision(BallWrapper& ball, Cylinder2BoostPad& pad, unsigned char forceMode, float forceAmount);
 	void RenderSettings() override;
+	void RenderSettingsTab(CVarWrapper& cvarGlobalEnable);
+	void RenderCourseControlsTab(bool customCreateIsEnabled);
+	void RenderInteractionControlsTab();
 	std::string GetPluginName() override;
 	void SetImGuiContext(uintptr_t ctx) override;
 	void Render(CanvasWrapper canvas);

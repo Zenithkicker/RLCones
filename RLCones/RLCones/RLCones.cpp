@@ -371,6 +371,7 @@ void RLCones::HandleBallPadCollision(BallWrapper& ball, Cylinder2BoostPad& pad, 
 {
 	if (_collisionManager.AreSpheresColliding(ball.GetLocation(), ball.GetRadius(), pad._boostPad.GetPosition(), pad._boostPad.GetRadius()))
 	{
+		//todo: better collision reaction
 		Vector force = Vector(0, 0, forceAmount);
 		ball.AddForce(force, forceMode);
 	}
