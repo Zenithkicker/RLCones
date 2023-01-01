@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "BoostPadManager.h"
+#include "HelperFunctions.h"
 
 
 BoostPadManager::BoostPadManager()
@@ -64,12 +65,22 @@ void BoostPadManager::SpawnCustomCylinder2BoostPad(Vector spawnPos, bool isBigPa
 	_customCylinder2Boostpads.push_back(Cylinder2BoostPad(cy, pad));
 }
 
-void BoostPadManager::SpawnCustomCylinder2Gate(Vector carPos, float gateDistanceFromCar, bool isBigPad)
+void BoostPadManager::SpawnCustomCylinder2Gate(CarWrapper cw, float gateDistanceFromCar, bool isBigPad)
 {
-	Vector gateLeftSpawnPos = Vector(carPos.X - gateDistanceFromCar, carPos.Y, carPos.Z);
-	Vector gateRightSpawnPos = Vector(carPos.X + gateDistanceFromCar, carPos.Y, carPos.Z);
-	BoostPad padLeft = BoostPad(gateLeftSpawnPos, isBigPad);
-	BoostPad padRight = BoostPad(gateRightSpawnPos, isBigPad);
+	Vector carPos = cw.GetLocation();
+	RBState carRb = cw.GetRBState();
+
+	//get the right local vector of car
+	Vector right = quatToRight(carRb.Quaternion);
+	Vector left = -1 * right;
+
+	//scale that vector by the gate distance
+	Vector gateRightSpawn = right * gateDistanceFromCar;
+	Vector gateLeftSpawn = left * gateDistanceFromCar;
+	
+	//create the spawn position of the gates by adding to the car position
+	BoostPad padLeft = BoostPad(gateLeftSpawn + carPos, isBigPad);
+	BoostPad padRight = BoostPad(gateRightSpawn + carPos, isBigPad);
 
 	RT::Cylinder2 cyLeft = RT::Cylinder2();
 	cyLeft.location = padLeft.GetPosition();

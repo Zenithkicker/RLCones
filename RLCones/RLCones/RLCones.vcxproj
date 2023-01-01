@@ -111,6 +111,7 @@
     </ClCompile>
     <ClCompile Include="fmt\src\format.cc" />
     <ClCompile Include="fmt\src\os.cc" />
+    <ClCompile Include="HelperFunctions.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imguivariouscontrols.cpp" />
     <ClCompile Include="imgui\imgui_additions.cpp" />
@@ -186,6 +187,7 @@
     <ClInclude Include="Extra\RenderingAssistant.h" />
     <ClInclude Include="Extra\RenderingMath.h" />
     <ClInclude Include="Extra\WrapperStructsExtensions.h" />
+    <ClInclude Include="HelperFunctions.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imguivariouscontrols.h" />

@@ -462,7 +462,7 @@ void RLCones::OnKeyPressed(ActorWrapper aw, void* params, std::string eventName)
 		if (!cvarDistFromCar.IsNull())
 			gateDistFromCar = cvarDistFromCar.getFloatValue();
 
-		_bPadManager.SpawnCustomCylinder2Gate(cw.GetLocation(), gateDistFromCar, true);
+		_bPadManager.SpawnCustomCylinder2Gate(cw, gateDistFromCar, true);
 	}
 }
 
